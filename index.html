@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        :root {
+            --pink-bg: #ffe4e9;
+            --dark-pink: #ff4d6d;
+            --btn-color: #f08080;
+        }
+
+        body {
+            background-color: var(--pink-bg);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #444;
+        }
+
+        /* Screen Layout */
+        .screen { 
+            text-align: center; 
+            width: 100%; 
+            max-width: 500px; 
+            position: absolute;
+            transition: opacity 0.4s ease;
+        }
+
+        .hidden { 
+            display: none !important; 
+            opacity: 0; 
+        }
+
+        /* Visuals */
+        .emoji-art { 
+            font-size: 80px; 
+            margin-bottom: 20px; 
+            display: block; 
+            animation: float 3s ease-in-out infinite; 
+        }
+
+        .btn {
+            background-color: var(--btn-color);
+            border: 2px solid #555;
+            border-radius: 25px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            font-size: 1rem;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .btn:hover { 
+            transform: scale(1.1); 
+            box-shadow: 0 0 15px var(--dark-pink); 
+        }
+
+        /* Success Screen Grid */
+        .gift-grid { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            margin-top: 30px; 
+        }
+
+        .gift-card {
+            width: 90px; height: 110px; 
+            background: var(--btn-color);
+            border: 2px solid #555; 
+            border-radius: 15px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            cursor: pointer; 
+            font-weight: bold; 
+            color: white;
+        }
+
+        /* Overlay / Popups */
+        .overlay {
+            position: fixed; top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background: rgba(255, 182, 193, 0.95);
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            z-index: 100;
+        }
+
+        .overlay-content {
+            background: var(--pink-bg); 
+            padding: 30px; 
+            border-radius: 20px;
+            border: 3px solid var(--dark-pink); 
+            max-width: 80%; 
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .text-bubble {
+            background: white; 
+            border: 2px solid var(--dark-pink);
+            border-radius: 15px; 
+            padding: 8px 15px; 
+            margin: 5px;
+            display: inline-block; 
+            font-size: 0.85rem;
+        }
+
+        /* Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        
+        .floating-emoji {
+            position: fixed; bottom: -50px; font-size: 24px; z-index: -1;
+            animation: floatUp 6s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <section id="screen1" class="screen">
+        <span class="emoji-art">🤖💝🐼</span>
+        <h1>Hey there, <br> Will you be my Valentine?</h1>
+        <button onclick="changeScreen('screen3')" class="btn">YES OF COURSE</button>
+        <button onclick="changeScreen('screen2')" class="btn">NO THANK YOU</button>
+    </section>
+
+    <section id="screen2" class="screen hidden">
+        <span class="emoji-art">💔🥺</span>
+        <h1>Try again please :(</h1>
+        <button onclick="changeScreen('screen1')" class="btn">Try Again</button>
+    </section>
+
+    <section id="screen3" class="screen hidden">
+        <span class="emoji-art">🎉💖✨</span>
+        <h1>Yay, you said yes!</h1>
+        <p>I made all these for you hehe</p>
+        <div class="gift-grid">
+            <div class="gift-card" onclick="openGift('bouquet')">Gift 1</div>
+            <div class="gift-card" onclick="openGift('letter')">Gift 2</div>
+        </div>
+        <br><br>
+        <p style="font-size: 0.8rem; cursor: pointer; text-decoration: underline;" onclick="changeScreen('screen1')">click to restart!</p>
+    </section>
+
+    <div id="gift-overlay" class="overlay hidden" onclick="closeGift()">
+        <div class="overlay-content" id="gift-content" onclick="event.stopPropagation()">
+            </div>
+        <p style="font-size: 0.8rem; margin-top: 15px; color: #ff4d6d; font-weight: bold;">(Click anywhere to close)</p>
+    </div>
+
+    <script>
+        // Use unique function names to avoid conflicts
+        function changeScreen(id) {
+            // Hide all sections with class 'screen'
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(s => s.classList.add('hidden'));
+
+            // Show the specific one
+            const target = document.getElementById(id);
+            if(target) {
+                target.classList.remove('hidden');
+                target.style.opacity = "1";
+            }
+        }
+
+        function openGift(type) {
+            const overlay = document.getElementById('gift-overlay');
+            const content = document.getElementById('gift-content');
+            overlay.classList.remove('hidden');
+
+            if (type === 'bouquet') {
+                content.innerHTML = `
+                    <h2 style="color: #ff4d6d;">Your Rose Bouquet 🌹</h2>
+                    <div class="text-bubble">I will always love you</div>
+                    <div class="text-bubble">You are the best part of my life</div>
+                    <div style="font-size: 80px; margin: 15px;">💐</div>
+                    <div class="text-bubble">You'll forever be my only option</div>
+                    <div class="text-bubble">I can't imagine life without you</div>
+                `;
+            } else if (type === 'letter') {
+                content.innerHTML = `
+                    <h2 style="color: #ff4d6d;">Words from my Heart 💌</h2>
+                    <p style="text-align: left; background: white; padding: 15px; border-radius: 10px; border: 1px dashed pink; line-height: 1.5;">
+                        To the love of my life, you make my life so meaningful and I am so lucky to have you as my valentine this year. 
+                        I love you wholeheartedly and I can’t wait to continue loving you for the rest of my life. 
+                        I know I tell you this every day, but you are literally the most beautiful girl I know. 
+                        <br><br><strong>Always, Forever.</strong>
+                    </p>
+                `;
+            }
+        }
+
+        function closeGift() {
+            document.getElementById('gift-overlay').classList.add('hidden');
+        }
+
+        // Floating heart effect
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.className = 'floating-emoji';
+            const icons = ['❤️','💖','🌸','✨','☁️'];
+            heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }, 500);
+    </script>
+</body>
+</html>
